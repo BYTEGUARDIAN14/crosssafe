@@ -1,3 +1,30 @@
+# CrossSafe
+
+**CrossSafe** is a React web app that uses a **TensorFlow.js / Teachable Machine** image model to classify a zebra crossing photo as **SAFE** or **RISKY** (with confidence bars).
+
+## Getting started
+
+```bash
+# install
+npm install
+
+# add model files
+# Copy these into: /public/model/
+# - model.json
+# - weights.bin
+# - metadata.json
+
+# run
+npm start
+```
+
+## Notes
+
+- The model is loaded from:
+  - `"/model/model.json"`
+  - `"/model/metadata.json"`
+- If your Teachable Machine labels differ (e.g., not `Risk` / `No Risk`), adjust label matching in `src/App.jsx`.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
