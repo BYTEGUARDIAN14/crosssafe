@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import './UploadZone.css';
 
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes)) return '';
@@ -23,11 +22,12 @@ export default function UploadZone({
   const inputRef = useRef(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const zoneState = useMemo(() => {
-    if (isDragOver) return 'drag';
-    if (resultState === 'safe') return 'safe';
-    if (resultState === 'risk') return 'risk';
-    return 'idle';
+  // Determine dynamic classes based on state
+  const stateClasses = useMemo(() => {
+    if (isDragOver) return 'border-neutral bg-neutral/10 shadow-[0_0_20px_rgba(0,191,255,0.2)]';
+    if (resultState === 'safe') return 'border-safe/50 bg-safe/5';
+    if (resultState === 'risk') return 'border-risk/50 bg-risk/5';
+    return 'border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20';
   }, [isDragOver, resultState]);
 
   const openPicker = useCallback(() => {
@@ -85,9 +85,9 @@ export default function UploadZone({
   );
 
   return (
-    <div className="uploadWrap" style={{ animationDelay: '80ms' }}>
+    <div className="w-full animate-fade-in-up [animation-delay:80ms]">
       <div
-        className={`uploadZone uploadZone--${zoneState} ${isAnalyzing ? 'uploadZone--analyzing' : ''}`}
+        className={`relative group cursor-pointer transition-all duration-300 ease-out rounded-[2rem] border-2 border-dashed flex flex-col items-center justify-center min-h-[400px] overflow-hidden backdrop-blur-sm ${stateClasses} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''} ${isAnalyzing ? 'pointer-events-none' : ''}`}
         tabIndex={isDisabled ? -1 : 0}
         role="button"
         aria-label="Upload image"
@@ -100,71 +100,87 @@ export default function UploadZone({
       >
         <input
           ref={inputRef}
-          className="hiddenInput"
+          className="hidden"
           type="file"
           accept="image/*"
           onChange={(e) => handleFiles(e.target.files)}
         />
 
         {!imagePreview ? (
-          <div className="uploadEmpty">
-            <div className="uploadIcon" aria-hidden="true">
-              ⬆
+          <div className="flex flex-col items-center p-8 text-center">
+            <div className="w-20 h-20 mb-6 rounded-3xl bg-white/5 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
+              <span className="opacity-60 group-hover:opacity-100 transition-opacity">↑</span>
             </div>
-            <div className="uploadTitle">Drop an image here</div>
-            <div className="uploadHint">
-              or <span className="linkLike">click to upload</span>
-            </div>
+            <h3 className="text-2xl font-display font-black tracking-wide mb-2">
+              Secure Image Upload
+            </h3>
+            <p className="text-white/40 font-medium mb-8 max-w-xs">
+              Drag and drop an image here or <span className="text-neutral underline decoration-neutral/30 underline-offset-4 decoration-2">browse files</span>
+            </p>
 
-            <div className="uploadMeta">
-              {!modelLoaded ? (
-                <span className="pill pill--neutral">Loading model…</span>
-              ) : (
-                <span className="pill pill--neutral">Ready</span>
-              )}
-              <span className="pill pill--neutral">JPG/PNG/WebP</span>
+            <div className="flex flex-wrap justify-center gap-3">
+              <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold tracking-widest uppercase text-white/40">
+                {modelLoaded ? 'AI Ready' : 'Loading Engine...'}
+              </span>
+              <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold tracking-widest uppercase text-white/40">
+                JPG / PNG / WEBP
+              </span>
             </div>
           </div>
         ) : (
-          <div className="uploadPreview">
-            <div className="previewFrame">
-              <img className="previewImg" src={imagePreview} alt="Uploaded zebra crossing preview" />
+          <div className="w-full h-full flex flex-col">
+            <div className="relative flex-grow flex items-center justify-center bg-black/20 p-4">
+              <img 
+                className="max-h-[340px] w-auto rounded-xl shadow-2xl z-0 object-contain" 
+                src={imagePreview} 
+                alt="Uploaded zebra crossing preview" 
+              />
+              
               {isAnalyzing && (
-                <div className="scanOverlay" aria-label="Analyzing image">
-                  <div className="scanLine" />
-                  <div className="scanText">Analyzing…</div>
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
+                  <div className="absolute inset-0 bg-neutral/10 backdrop-blur-[2px]" />
+                  <div className="relative w-full h-full overflow-hidden">
+                    <div className="absolute left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-neutral to-transparent animate-scan-line shadow-[0_0_15px_rgba(0,191,255,0.8)] z-20" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                      <div className="px-6 py-2 bg-neutral text-bg-primary font-display font-black text-xs tracking-[0.2em] rounded-full uppercase shadow-2xl italic">
+                        Scanning...
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className="fileRow">
-              <div className="fileMeta">
-                <div className="fileName">{fileMeta?.name}</div>
-                <div className="fileSize">{formatBytes(fileMeta?.size)}</div>
+            <div className="p-6 bg-white/[0.03] backdrop-blur-md flex items-center justify-between border-t border-white/5">
+              <div className="overflow-hidden mr-4">
+                <div className="text-xs font-bold text-white/80 truncate mb-1">{fileMeta?.name}</div>
+                <div className="text-[10px] font-bold text-white/30 tracking-widest uppercase italic">{formatBytes(fileMeta?.size)}</div>
               </div>
-              <div className="actions">
-                <button
-                  className="btn btn--ghost"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onReset?.();
-                  }}
-                  aria-label="Re-upload image"
-                >
-                  Re-upload
-                </button>
-              </div>
+              <button
+                className="shrink-0 px-5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-black tracking-widest uppercase transition-all duration-200"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onReset?.();
+                }}
+              >
+                Reset Analysis
+              </button>
             </div>
           </div>
         )}
       </div>
 
-      <div className="helperText">
-        Model files must exist at <code>/public/model/</code> as <code>model.json</code>,{' '}
-        <code>weights.bin</code>, <code>metadata.json</code>.
+      <div className="mt-8 p-5 rounded-2xl bg-white/[0.02] border border-white/5 flex items-start gap-4">
+        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/30 text-xs shrink-0 italic">!</div>
+        <p className="text-[11px] leading-relaxed text-white/30 font-medium">
+          Note: This AI model is trained on specific zebra crossing data. 
+          Ensure the image is clear and focused on the crossing area for optimal results. 
+          Model binaries are served from <code className="text-neutral/60">/public/model/</code>.
+        </p>
       </div>
     </div>
   );
 }
+
 

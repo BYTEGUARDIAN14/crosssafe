@@ -1,25 +1,18 @@
-html,
-body {
-  height: 100%;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-text-primary bg-bg-primary overflow-x-hidden transition-colors duration-500;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  }
 }
 
-body {
-  margin: 0;
-  background: #0a0a0a;
-  color: #f0f0f0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer utilities {
+  .bg-grid-mask {
+    mask-image: radial-gradient(circle at 40% 20%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.35) 55%, rgba(0, 0, 0, 0) 85%);
+  }
 }
 
-* {
-  box-sizing: border-box;
-}
 
-code {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
-  color: rgba(240, 240, 240, 0.85);
-}
-
-button {
-  font: inherit;
-}
