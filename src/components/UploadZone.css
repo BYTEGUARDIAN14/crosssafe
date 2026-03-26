@@ -1,0 +1,228 @@
+.uploadWrap {
+  animation: fadeInUp 650ms ease both;
+}
+
+.uploadZone {
+  position: relative;
+  min-height: 320px;
+  border-radius: 18px;
+  background: var(--bg-card);
+  border: 1px dashed rgba(0, 191, 255, 0.55);
+  box-shadow: 0 14px 55px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+}
+
+.uploadZone:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.25), 0 14px 55px rgba(0, 0, 0, 0.45);
+}
+
+.uploadZone:hover {
+  transform: translateY(-2px);
+}
+
+.uploadZone--idle {
+  border-color: rgba(0, 191, 255, 0.55);
+}
+
+.uploadZone--drag {
+  border-color: rgba(0, 191, 255, 0.95);
+  box-shadow: 0 0 0 1px rgba(0, 191, 255, 0.35), 0 22px 70px rgba(0, 0, 0, 0.55);
+}
+
+.uploadZone--safe {
+  border-color: rgba(0, 255, 136, 0.75);
+  box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.2), 0 22px 70px rgba(0, 0, 0, 0.55);
+  animation: borderGlowSafe 1.8s ease-in-out infinite;
+}
+
+.uploadZone--risk {
+  border-color: rgba(255, 59, 59, 0.75);
+  box-shadow: 0 0 0 1px rgba(255, 59, 59, 0.2), 0 22px 70px rgba(0, 0, 0, 0.55);
+  animation: borderGlowRisk 1.8s ease-in-out infinite;
+}
+
+.uploadEmpty {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  padding: 28px 22px;
+  gap: 8px;
+}
+
+.uploadIcon {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-neutral);
+  filter: drop-shadow(0 0 12px rgba(0, 191, 255, 0.35));
+  font-size: 22px;
+}
+
+.uploadTitle {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  font-weight: 800;
+}
+
+.uploadHint {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.linkLike {
+  color: var(--accent-neutral);
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 191, 255, 0.35);
+}
+
+.uploadMeta {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pill {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text-muted);
+}
+
+.pill--neutral {
+  color: rgba(240, 240, 240, 0.85);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadPreview {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.previewFrame {
+  position: relative;
+  padding: 14px;
+}
+
+.previewImg {
+  width: 100%;
+  height: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.scanOverlay {
+  position: absolute;
+  inset: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 191, 255, 0.25);
+}
+
+.scanLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(0, 191, 255, 0.9), transparent);
+  animation: scanLine 1.2s linear infinite;
+}
+
+.scanText {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  font-size: 12px;
+  color: rgba(240, 240, 240, 0.9);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 6px 10px;
+  backdrop-filter: blur(10px);
+}
+
+.fileRow {
+  padding: 12px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.fileMeta {
+  min-width: 0;
+}
+
+.fileName {
+  font-size: 13px;
+  color: rgba(240, 240, 240, 0.9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 320px;
+}
+
+.fileSize {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.actions {
+  flex: 0 0 auto;
+}
+
+.helperText {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .uploadZone {
+    min-height: 240px;
+  }
+}
+
+@keyframes borderGlowSafe {
+  0%,
+  100% {
+    border-color: rgba(0, 255, 136, 0.75);
+  }
+  50% {
+    border-color: rgba(0, 255, 136, 0.25);
+  }
+}
+
+@keyframes borderGlowRisk {
+  0%,
+  100% {
+    border-color: rgba(255, 59, 59, 0.75);
+  }
+  50% {
+    border-color: rgba(255, 59, 59, 0.25);
+  }
+}
+
